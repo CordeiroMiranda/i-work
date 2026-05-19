@@ -35,7 +35,10 @@ export default function Dashboard() {
     <main className="min-h-screen bg-gray-50">
       <nav className="bg-blue-600 px-8 py-4 flex items-center justify-between">
         <a href="/" className="text-white text-2xl font-bold">i-work</a>
+       <div className="flex gap-4">
         <a href="/vagas" className="text-white hover:underline">Ver vagas</a>
+        <a href="/perfil" className="text-white hover:underline">Meu perfil</a>
+       </div>
       </nav>
 
       <div className="max-w-4xl mx-auto py-10 px-4">
