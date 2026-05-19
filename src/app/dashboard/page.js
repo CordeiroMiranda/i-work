@@ -37,8 +37,9 @@ export default function Dashboard() {
         <a href="/" className="text-white text-2xl font-bold">i-work</a>
        <div className="flex gap-4">
         <a href="/vagas" className="text-white hover:underline">Ver vagas</a>
-        <a href="/perfil" className="text-white hover:underline">Meu perfil</a>
-       </div>
+       <a href="/perfil" className="text-white hover:underline">Meu perfil</a>
+       <button onClick={async () => { await supabase.auth.signOut(); window.location.href = "/"; }} className="text-white hover:underline">Sair</button>
+        </div>
       </nav>
 
       <div className="max-w-4xl mx-auto py-10 px-4">
@@ -62,7 +63,10 @@ export default function Dashboard() {
               <h2 className="text-xl font-bold text-gray-800">{c.vagas?.titulo}</h2>
               <p className="text-blue-600 font-medium">{c.vagas?.empresa}</p>
               <p className="text-gray-500 text-sm mt-1">{c.vagas?.local} · {c.vagas?.tipo}</p>
-              <p className="text-green-600 text-sm mt-3 font-medium">✓ Candidatura enviada</p>
+              <div className="flex items-center justify-between mt-3">
+              <p className="text-green-600 text-sm font-medium">✓ Candidatura enviada</p>
+              <p className="text-gray-400 text-sm">{new Date(c.created_at).toLocaleDateString("pt-BR")}</p>
+              </div>
             </div>
           ))}
         </div>
