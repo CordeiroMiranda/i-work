@@ -14,7 +14,7 @@ export default function Vagas() {
     async function carregarDados() {
       const { data: vagasData } = await supabase
         .from("vagas")
-        .select("*")
+        .select("*, candidaturas(count)")
         .order("created_at", { ascending: false });
       setVagas(vagasData || []);
 
@@ -96,7 +96,7 @@ export default function Vagas() {
                 <div>
                   <a href={`/vagas/${vaga.id}`} className="text-xl font-bold text-gray-800 hover:text-blue-600 transition">{vaga.titulo}</a>
                   <p className="text-blue-600 font-medium">{vaga.empresa}</p>
-                  <p className="text-gray-500 text-sm mt-1">{vaga.local} · {vaga.tipo}</p>
+                  <p className="text-gray-500 text-sm mt-1">{vaga.local} · {vaga.tipo} · {vaga.candidaturas[0]?.count || 0} candidato(s)</p>
                   <p className="text-gray-600 mt-3">{vaga.descricao}</p>
                 </div>
                 <button
