@@ -94,7 +94,7 @@ export default function Vagas() {
             <div key={vaga.id} className="bg-white rounded-xl shadow-sm p-6 border hover:border-blue-400 transition">
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800">{vaga.titulo}</h2>
+                  <a href={`/vagas/${vaga.id}`} className="text-xl font-bold text-gray-800 hover:text-blue-600 transition">{vaga.titulo}</a>
                   <p className="text-blue-600 font-medium">{vaga.empresa}</p>
                   <p className="text-gray-500 text-sm mt-1">{vaga.local} · {vaga.tipo}</p>
                   <p className="text-gray-600 mt-3">{vaga.descricao}</p>
