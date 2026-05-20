@@ -1,3 +1,4 @@
+"use client";
 export default function Home() {
   return (
     <main className="min-h-screen bg-white">
@@ -21,10 +22,15 @@ export default function Home() {
         <div className="flex justify-center gap-4 max-w-xl mx-auto">
           <input
             type="text"
+            id="busca-home"
             placeholder="Cargo, área ou empresa..."
             className="flex-1 px-4 py-3 rounded-lg text-gray-800 outline-none placeholder-gray-400"
+            onKeyDown={(e) => { if (e.key === "Enter") window.location.href = `/vagas?busca=${e.target.value}`; }}
           />
-          <button className="bg-white text-blue-600 font-bold px-6 py-3 rounded-lg hover:bg-blue-50">
+          <button
+            onClick={() => { const v = document.getElementById("busca-home").value; window.location.href = `/vagas?busca=${v}`; }}
+            className="bg-white text-blue-600 font-bold px-6 py-3 rounded-lg hover:bg-blue-50"
+          >
             Buscar
           </button>
         </div>

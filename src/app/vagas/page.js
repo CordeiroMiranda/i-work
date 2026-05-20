@@ -8,7 +8,12 @@ export default function Vagas() {
   const [candidatando, setCandidatando] = useState(null);
   const [jaCandidata, setJaCandidata] = useState([]);
   const [filtroTipo, setFiltroTipo] = useState("Todos");
-  const [filtroBusca, setFiltroBusca] = useState("");
+  const [filtroBusca, setFiltroBusca] = useState(() => {
+    if (typeof window !== "undefined") {
+      return new URLSearchParams(window.location.search).get("busca") || "";
+    }
+    return "";
+  });
 
   useEffect(() => {
     async function carregarDados() {
