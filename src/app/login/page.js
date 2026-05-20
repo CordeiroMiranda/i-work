@@ -66,6 +66,9 @@ export default function Login() {
           <a href="/cadastro" className="text-blue-600 hover:underline">
             Cadastrar
           </a>
+          <a href="/recuperar-senha" className="text-blue-600 hover:underline block text-center mt-2">
+            Esqueci minha senha
+          </a>
         </p>
       </div>
     </main>
