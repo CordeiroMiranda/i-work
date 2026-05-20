@@ -20,7 +20,13 @@ export default function Login() {
     if (error) {
       setErro("E-mail ou senha incorretos");
     } else {
-      window.location.href = "/vagas";
+      const { data: { user } } = await supabase.auth.getUser();
+      const tipo = user?.user_metadata?.tipo;
+      if (tipo === "empresa") {
+        window.location.href = "/empresa";
+      } else {
+        window.location.href = "/vagas";
+      }
     }
 
     setLoading(false);
