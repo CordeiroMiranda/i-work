@@ -32,7 +32,7 @@ export default function EmpresaDashboard() {
 
     const { data } = await supabase
       .from("candidaturas")
-      .select("*, perfis(nome, email)")
+      .select("*, perfis(nome, email, telefone, linkedin, formacao, habilidades, experiencias)")
       .eq("vaga_id", vaga.id)
       .order("created_at", { ascending: false });
 
@@ -98,13 +98,18 @@ export default function EmpresaDashboard() {
               </div>
             )}
             <div className="flex flex-col gap-3">
-             {candidatos.map((c) => (
+            {candidatos.map((c) => (
               <div key={c.id} className="bg-white rounded-xl p-5 border">
-                <p className="text-gray-800 font-bold">{c.perfis?.nome || "Sem nome"}</p>
-                <p className="text-blue-600 text-sm">{c.perfis?.email}</p>
-                <p className="text-gray-400 text-xs mt-1">Candidatou-se em {new Date(c.created_at).toLocaleDateString("pt-BR")}</p>
-             </div>
-              ))}
+                  <p className="text-gray-800 font-bold">{c.perfis?.nome || "Sem nome"}</p>
+                  <p className="text-blue-600 text-sm">{c.perfis?.email}</p>
+                  {c.perfis?.telefone && <p className="text-gray-600 text-sm mt-1">📞 {c.perfis.telefone}</p>}
+                  {c.perfis?.linkedin && <p className="text-gray-600 text-sm">🔗 {c.perfis.linkedin}</p>}
+                  {c.perfis?.formacao && <p className="text-gray-600 text-sm mt-2"><span className="font-medium">Formação:</span> {c.perfis.formacao}</p>}
+                  {c.perfis?.habilidades && <p className="text-gray-600 text-sm mt-1"><span className="font-medium">Habilidades:</span> {c.perfis.habilidades}</p>}
+                  {c.perfis?.experiencias && <p className="text-gray-600 text-sm mt-1"><span className="font-medium">Experiências:</span> {c.perfis.experiencias}</p>}
+                  <p className="text-gray-400 text-xs mt-2">Candidatou-se em {new Date(c.created_at).toLocaleDateString("pt-BR")}</p>
+              </div>
+            ))}
             </div>
           </div>
         </div>
