@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -41,8 +41,38 @@ export default function Vagas() {
     setCandidatando(vagaId);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { window.location.href = "/login"; return; }
+
     const { error } = await supabase.from("candidaturas").insert({ user_id: user.id, vaga_id: vagaId });
-    if (!error) setJaCandidata((prev) => [...prev, vagaId]);
+
+    if (!error) {
+      setJaCandidata((prev) => [...prev, vagaId]);
+
+      const vaga = vagas.find((v) => v.id === vagaId);
+
+      const { data: perfilEmpresa } = await supabase
+        .from("perfis")
+        .select("email, nome")
+        .eq("id", vaga.user_id)
+        .single();
+
+      const { data: perfilCandidato } = await supabase
+        .from("perfis")
+        .select("nome")
+        .eq("id", user.id)
+        .single();
+
+      await fetch("/api/email-candidatura", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          emailEmpresa: perfilEmpresa?.email,
+          nomeEmpresa: perfilEmpresa?.nome,
+          nomeVaga: vaga.titulo,
+          nomeCandidato: perfilCandidato?.nome,
+        }),
+      });
+    }
+
     setCandidatando(null);
   }
 
@@ -66,7 +96,6 @@ export default function Vagas() {
       <div className="max-w-4xl mx-auto py-10 px-4">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Vagas disponíveis</h1>
 
-        {/* Filtros */}
         <div className="flex flex-col sm:flex-row gap-3 mb-8">
           <input
             type="text"

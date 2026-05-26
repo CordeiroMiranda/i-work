@@ -10,8 +10,10 @@ export default function Perfil() {
   const [formacao, setFormacao] = useState("");
   const [habilidades, setHabilidades] = useState("");
   const [experiencias, setExperiencias] = useState("");
+  const [curriculoUrl, setCurriculoUrl] = useState("");
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
+  const [uploadando, setUploadando] = useState(false);
   const [sucesso, setSucesso] = useState(false);
 
   useEffect(() => {
@@ -33,12 +35,46 @@ export default function Perfil() {
         setFormacao(perfil.formacao || "");
         setHabilidades(perfil.habilidades || "");
         setExperiencias(perfil.experiencias || "");
+        setCurriculoUrl(perfil.curriculo_url || "");
       }
 
       setLoading(false);
     }
     carregarPerfil();
   }, []);
+
+  async function handleUploadCurriculo(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.type !== "application/pdf") {
+      alert("Por favor envie apenas arquivos PDF!");
+      return;
+    }
+
+    setUploadando(true);
+
+    const fileName = `${user.id}/curriculo.pdf`;
+
+    const { error } = await supabase.storage
+      .from("curriculos")
+      .upload(fileName, file, { upsert: true });
+
+    if (!error) {
+      const { data } = supabase.storage
+        .from("curriculos")
+        .getPublicUrl(fileName);
+
+      const url = data.publicUrl;
+      setCurriculoUrl(url);
+
+      await supabase.from("perfis").upsert({
+        id: user.id,
+        curriculo_url: url,
+      });
+    }
+
+    setUploadando(false);
+  }
 
   async function handleSalvar() {
     setSalvando(true);
@@ -77,7 +113,6 @@ export default function Perfil() {
         <h1 className="text-3xl font-bold text-gray-800 mb-8">Meu perfil</h1>
 
         <div className="bg-white rounded-2xl shadow-sm p-8 border flex flex-col gap-5">
-          {/* Avatar */}
           <div className="flex items-center gap-4 mb-2">
             <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-bold">
               {nome ? nome[0].toUpperCase() : user?.email[0].toUpperCase()}
@@ -90,7 +125,6 @@ export default function Perfil() {
 
           <hr />
 
-          {/* Dados pessoais */}
           <h2 className="font-bold text-gray-700">Dados pessoais</h2>
 
           <div>
@@ -119,8 +153,27 @@ export default function Perfil() {
 
           <hr />
 
-          {/* Currículo */}
           <h2 className="font-bold text-gray-700">Currículo</h2>
+
+          <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-400 transition">
+            <p className="text-gray-500 mb-3">📄 Envie seu currículo em PDF</p>
+            <input
+              type="file"
+              accept=".pdf"
+              onChange={handleUploadCurriculo}
+              className="hidden"
+              id="upload-curriculo"
+            />
+            <label htmlFor="upload-curriculo" className="bg-blue-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-700 transition text-sm font-semibold">
+              {uploadando ? "Enviando..." : "Escolher PDF"}
+            </label>
+            {curriculoUrl && (
+              <p className="text-green-600 text-sm mt-3">
+                ✓ Currículo enviado!{" "}
+                <a href={curriculoUrl} target="_blank" className="underline">Ver PDF</a>
+              </p>
+            )}
+          </div>
 
           <div>
             <label className="text-sm font-medium text-gray-700 mb-1 block">Formação acadêmica</label>

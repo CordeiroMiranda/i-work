@@ -36,13 +36,43 @@ export default function DetalheVaga({ params }) {
     carregarVaga();
   }, [id]);
 
-  async function handleCandidatar() {
-    setCandidatando(true);
+  async function handleCandidatar(vagaId) {
+    setCandidatando(vagaId);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { window.location.href = "/login"; return; }
-    await supabase.from("candidaturas").insert({ user_id: user.id, vaga_id: vaga.id });
-    setJaCandidata(true);
-    setCandidatando(false);
+
+    const { error } = await supabase.from("candidaturas").insert({ user_id: user.id, vaga_id: vagaId });
+
+    if (!error) {
+      setJaCandidata((prev) => [...prev, vagaId]);
+
+      const vaga = vagas.find((v) => v.id === vagaId);
+
+      const { data: perfilEmpresa } = await supabase
+        .from("perfis")
+        .select("email, nome")
+        .eq("id", vaga.user_id)
+        .single();
+
+      const { data: perfilCandidato } = await supabase
+        .from("perfis")
+        .select("nome")
+        .eq("id", user.id)
+        .single();
+
+      await fetch("/api/email-candidatura", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          emailEmpresa: perfilEmpresa?.email,
+          nomeEmpresa: perfilEmpresa?.nome,
+          nomeVaga: vaga.titulo,
+          nomeCandidato: perfilCandidato?.nome,
+        }),
+      });
+    }
+
+    setCandidatando(null);
   }
 
   if (loading) return <p className="text-center mt-20 text-gray-500">Carregando...</p>;
