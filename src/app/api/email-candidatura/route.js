@@ -1,16 +1,11 @@
 import { Resend } from 'resend';
 
-let resend;
-try {
-  resend = new Resend(process.env.RESEND_API_KEY || 'placeholder');
-} catch(e) {
-  resend = null;
-}
-
 export async function POST(request) {
   const { emailEmpresa, nomeEmpresa, nomeVaga, nomeCandidato } = await request.json();
-
+  
   try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    
     await resend.emails.send({
       from: 'i-work <onboarding@resend.dev>',
       to: emailEmpresa,
@@ -23,7 +18,6 @@ export async function POST(request) {
         <a href="https://i-work.vercel.app/empresa">Ver candidatos</a>
       `,
     });
-
     return Response.json({ ok: true });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
