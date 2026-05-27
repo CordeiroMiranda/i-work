@@ -41,7 +41,7 @@ export default function Vagas() {
         .from("vagas")
         .select("*, candidaturas(count)")
         .order("created_at", { ascending: false });
-
+ 
       const { data: { user } } = await supabase.auth.getUser();
 
       if (user) {
@@ -80,8 +80,35 @@ export default function Vagas() {
     setCandidatando(vagaId);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { window.location.href = "/login"; return; }
-    const { error } = await supabase.from("candidaturas").insert({ user_id: user.id, vaga_id: vagaId });
-    if (!error) setJaCandidata((prev) => [...prev, vagaId]);
+   const { error } = await supabase.from("candidaturas").insert({ user_id: user.id, vaga_id: vagaId });
+if (!error) {
+  setJaCandidata((prev) => [...prev, vagaId]);
+
+  const vaga = vagas.find((v) => v.id === vagaId);
+
+  const { data: perfilEmpresa } = await supabase
+    .from("perfis")
+    .select("email, nome")
+    .eq("id", vaga.user_id)
+    .single();
+
+  const { data: perfilCandidato } = await supabase
+    .from("perfis")
+    .select("nome")
+    .eq("id", user.id)
+    .single();
+
+  await fetch("/api/email-candidatura", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      emailEmpresa: perfilEmpresa?.email,
+      nomeEmpresa: perfilEmpresa?.nome,
+      nomeVaga: vaga.titulo,
+      nomeCandidato: perfilCandidato?.nome,
+    }),
+  });
+}
     setCandidatando(null);
   }
 

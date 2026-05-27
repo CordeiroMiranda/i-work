@@ -12,17 +12,17 @@ export default function Home() {
 
       <section className="bg-blue-600 text-white text-center py-24 px-4">
         <h1 className="text-5xl font-bold mb-4">
-          Encontre seu estágio ou emprego ideal
+          Encontre seu estagio ou emprego ideal
         </h1>
         <p className="text-xl mb-8 text-blue-100">
-          Conectamos estudantes e profissionais às melhores oportunidades
+          Conectamos estudantes e profissionais as melhores oportunidades
         </p>
         <div className="flex justify-center gap-4 max-w-xl mx-auto">
           <input
             type="text"
             id="busca-home"
-            placeholder="Cargo, área ou empresa..."
-            className="flex-1 px-4 py-3 rounded-lg text-gray-800 outline-none placeholder-gray-400"
+            placeholder="Cargo, area ou empresa..."
+            className="flex-1 px-4 py-3 rounded-lg text-gray-800 outline-none"
             onKeyDown={(e) => { if (e.key === "Enter") window.location.href = `/vagas?busca=${e.target.value}`; }}
           />
           <button
@@ -39,8 +39,8 @@ export default function Home() {
           Explore por categoria
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {["Tecnologia", "Administração", "Marketing", "Engenharia", "Saúde", "Direito", "Design", "Educação"].map((area) => (
-            
+          {["Tecnologia", "Administracao", "Marketing", "Engenharia", "Saude", "Direito", "Design", "Educacao"].map((area) => (
+            <a
               key={area}
               href={`/vagas?busca=${area}`}
               className="border rounded-xl p-4 text-center hover:border-blue-500 hover:text-blue-600 cursor-pointer transition"
