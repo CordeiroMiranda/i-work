@@ -41,7 +41,7 @@ export default function Home() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {["Tecnologia", "Administração", "Marketing", "Engenharia", "Saúde", "Direito", "Design", "Educação"].map((area) => (
             
-              <a key={area}
+              key={area}
               href={`/vagas?busca=${area}`}
               className="border rounded-xl p-4 text-center hover:border-blue-500 hover:text-blue-600 cursor-pointer transition"
             >
