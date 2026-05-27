@@ -1,6 +1,11 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resend;
+try {
+  resend = new Resend(process.env.RESEND_API_KEY || 'placeholder');
+} catch(e) {
+  resend = null;
+}
 
 export async function POST(request) {
   const { emailEmpresa, nomeEmpresa, nomeVaga, nomeCandidato } = await request.json();
